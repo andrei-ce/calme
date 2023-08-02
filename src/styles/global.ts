@@ -1,4 +1,4 @@
-import { globalCss } from "@celoco-ui/react"
+import { globalCss } from '@celoco-ui/react'
 
 // @celoco-ui/react uses Stitches - css framework
 export const globalStyles = globalCss({
