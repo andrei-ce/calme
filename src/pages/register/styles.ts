@@ -16,6 +16,10 @@ export const Header = styled('div', {
   [`> ${Text}`]: {
     color: '$gray200',
     marginBottom: '$6',
+
+    ul: {
+      padding: '$2 0 $2 $10',
+    },
   },
 })
 
@@ -33,5 +37,5 @@ export const Form = styled(Box, {
 })
 
 export const FormError = styled(Text, {
-  color: '#f75a68',
+  color: '$red300',
 })

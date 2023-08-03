@@ -25,7 +25,7 @@ export default function ClaimUsernameForm() {
     register,
     handleSubmit,
     watch,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<ClaimUsernameFormData>({
     resolver: zodResolver(claimUsernameFormSchema),
   })
@@ -34,7 +34,8 @@ export default function ClaimUsernameForm() {
 
   async function handleClaimUsername(data: ClaimUsernameFormData) {
     const { username } = data
-    await router.push('/register')
+    // await here is important so that react hook form knows isSubmitting is true until promise is resolved
+    await router.push(`/register?username=${username}`)
   }
 
   return (
@@ -47,7 +48,7 @@ export default function ClaimUsernameForm() {
           {...register('username')}
         />
 
-        <Button size="sm" type="submit">
+        <Button size="sm" type="submit" disabled={isSubmitting}>
           {isUsernameEmpty ? 'Call dibs' : 'Pick a username'}
           <ArrowRight />
         </Button>

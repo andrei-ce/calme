@@ -4,6 +4,10 @@ import { ArrowRight } from 'phosphor-react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useRouter } from 'next/router'
+import { useEffect } from 'react'
+import { api } from '@/lib/axios'
+import { AxiosError } from 'axios'
 
 const registerFormSchema = z
   .object({
@@ -15,7 +19,7 @@ const registerFormSchema = z
       })
       .transform((username) => username.toLowerCase()),
 
-    fullName: z
+    name: z
       .string()
       .min(5, { message: '⚠️ Full name is too short' })
       .regex(/^\s*\S+(\s+\S+)+\s*$/, {
@@ -26,17 +30,41 @@ const registerFormSchema = z
 
 type RegisterFormDataType = z.infer<typeof registerFormSchema>
 
+// COMPONENT //
 export default function Register() {
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<RegisterFormDataType>({
     resolver: zodResolver(registerFormSchema),
+    // defaultValues: {
+    //   username: banana // (I could set a default value here too, but now using setValue)
+    // }
   })
 
+  const router = useRouter()
+  useEffect(() => {
+    if (router.query.username) {
+      setValue('username', String(router.query.username)) // query param keys are not unique
+    }
+  }, [router.query?.username, setValue])
+
   async function handleRegister(data: RegisterFormDataType) {
-    console.log(data)
+    try {
+      await api.post('/users', {
+        name: data.name,
+        username: data.username,
+      })
+      await router.push('/register/connect-calendar')
+    } catch (error) {
+      if (error instanceof AxiosError && error?.response?.data?.message) {
+        alert(error.response.data.message)
+        return
+      }
+      console.error(error)
+    }
   }
 
   return (
@@ -65,12 +93,9 @@ export default function Register() {
         </label>
         <label>
           <Text size="sm">Full name</Text>
-          <TextInput
-            placeholder="Johnson McJohnson"
-            {...register('fullName')}
-          />
-          {errors.fullName ? (
-            <FormError size="sm">{errors.fullName.message}</FormError>
+          <TextInput placeholder="Johnson McJohnson" {...register('name')} />
+          {errors.name ? (
+            <FormError size="sm">{errors.name.message}</FormError>
           ) : null}
         </label>
 
