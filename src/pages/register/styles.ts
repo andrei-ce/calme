@@ -2,7 +2,7 @@ import { Box, styled, Text, Heading } from '@celoco-ui/react'
 
 export const Container = styled('main', {
   maxWidth: 572,
-  margin: '$20 auto $4',
+  margin: '$10 auto $4',
   padding: '0 $4',
 })
 
