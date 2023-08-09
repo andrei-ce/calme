@@ -1,12 +1,12 @@
 import PrismaAdapter from '@/lib/next-auth/prisma-adapter'
-import { NextApiRequest, NextApiResponse } from 'next'
+import { NextApiRequest, NextApiResponse, NextPageContext } from 'next'
 import NextAuth, { NextAuthOptions } from 'next-auth'
 import GoogleProvider, { GoogleProfile } from 'next-auth/providers/google'
 
 // [...nextauth] is a route. For example, when accessing localhost/api/auth/param1/param2/etc, param1, param1 and etc will be passed as params to next-auth
 export function buildNextAuthOptions(
-  req: NextApiRequest,
-  res: NextApiResponse,
+  req: NextApiRequest | NextPageContext['req'],
+  res: NextApiResponse | NextPageContext['res'],
 ): NextAuthOptions {
   return {
     adapter: PrismaAdapter(req, res),

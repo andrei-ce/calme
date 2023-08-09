@@ -16,7 +16,7 @@ import {
   TimeIntervalInputs,
   FormError,
 } from './styles'
-import {} from 'next/router'
+import { useRouter } from 'next/router'
 import { z } from 'zod'
 import { useFieldArray, useForm, Controller } from 'react-hook-form'
 import { getWeekDays } from '@/utils/get-week-days'
@@ -92,15 +92,17 @@ export default function TimeSlotsPicker() {
     name: 'intervals',
   })
 
+  const weekDays = getWeekDays()
+  const intervals = watch(`intervals`)
+  const router = useRouter()
+
   async function handleSetTimeSlots(data: TimeSlotsFormDataOutput) {
     console.log('handleSetTimeSlots() called')
     const {intervals} = data
    
     await api.post('/users/time-intervals', {intervals})
+    await router.push('/register/update-profile')
   }
-
-  const weekDays = getWeekDays()
-  const intervals = watch(`intervals`)
 
   // COMPONENT RENDERED //
   return (
