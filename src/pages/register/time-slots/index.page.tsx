@@ -71,7 +71,7 @@ export default function TimeSlotsPicker() {
     control,
     watch,
     formState: { isSubmitting, errors },
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } = useForm<TimeSlotsFormDataInput, any, TimeSlotsFormDataOutput>({
     resolver: zodResolver(timeSlotsFormSchema),
     defaultValues: {
@@ -98,9 +98,9 @@ export default function TimeSlotsPicker() {
 
   async function handleSetTimeSlots(data: TimeSlotsFormDataOutput) {
     console.log('handleSetTimeSlots() called')
-    const {intervals} = data
-   
-    await api.post('/users/time-intervals', {intervals})
+    const { intervals } = data
+
+    await api.post('/users/time-intervals', { intervals })
     await router.push('/register/update-profile')
   }
 
