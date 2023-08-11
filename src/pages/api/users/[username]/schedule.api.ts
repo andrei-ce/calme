@@ -3,7 +3,7 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import { z } from 'zod'
 // import { google } from 'googleapis'
 // import { getGoogleOAuthToken } from '@/lib/google'
-import { prisma } from '../../../../lib/prisma'
+import { prisma } from '@/lib/prisma'
 
 export default async function handler(
   req: NextApiRequest,
@@ -31,14 +31,14 @@ export default async function handler(
     notes: z.string(),
     date: z.string().datetime(),
   })
-
-  const { name, email, notes, date } = createMeetingBody.parse(req.body)
+  console.log(req.body)
+  const { name, email, notes, date } = createMeetingBody.parse(req.body.params)
 
   const meetingDate = dayjs(date).startOf('hour')
 
   if (meetingDate.isBefore(new Date())) {
     return res.status(400).json({
-      message: 'Date is in the past.',
+      message: 'You cannot travel back in time.',
     })
   }
 
@@ -60,7 +60,7 @@ export default async function handler(
       name,
       email,
       notes,
-      date: meetingDate.toDate(),
+      date: meetingDate.toDate(), // prisma accepts JS dates
       user_id: user.id,
     },
   })

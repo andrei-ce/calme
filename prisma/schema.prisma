@@ -82,8 +82,8 @@ model UserTimeSlot {
 model Meeting {
   id         String   @id @default(uuid())
   date       DateTime
-  name       String
-  email      String
+  name       String // name of requester
+  email      String // email of requester
   notes      String?
   created_at DateTime @default(now())
 

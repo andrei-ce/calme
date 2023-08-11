@@ -19,6 +19,10 @@ export function buildNextAuthOptions(
           params: {
             scope:
               'https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/calendar',
+            // 3 keys to get a refresh token everytime the user signs in (after user confirmation)
+            prompt: 'consent',
+            access_type: 'offline',
+            response_type: 'code',
           },
         },
         profile(profile: GoogleProfile) {

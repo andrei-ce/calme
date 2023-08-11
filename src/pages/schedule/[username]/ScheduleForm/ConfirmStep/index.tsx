@@ -5,7 +5,7 @@ import { useRouter } from 'next/router'
 import { CalendarBlank, Clock } from 'phosphor-react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
-// import { api } from '@/lib/axios'
+import { api } from '@/lib/axios'
 import { ConfirmForm, FormActions, FormError, FormHeader } from './styles'
 
 // FORM RELATED
@@ -36,14 +36,26 @@ export function ConfirmStep({
   })
 
   const router = useRouter()
-  // const username = String(router.query.username)
+  const username = String(router.query.username)
 
   async function handleConfirmScheduling(data: ConfirmFormData) {
-    console.log(data)
+    const { name, email, notes } = data
+    await api.post(`/users/${username}/schedule`, {
+      params: {
+        name,
+        email,
+        notes,
+        date: schedulingDate,
+      },
+    })
+
+    await router.push(`/schedule/${username}`)
+
+    onCancelConfirmation() // this is not a cancellation, it's just to redirect again
   }
 
-  const describedDate = dayjs(schedulingDate).format('MMMM[ ]DD[, ]YYYY')
-  const describedTime = dayjs(schedulingDate).format('HH:mm[h]')
+  const displayedDate = dayjs(schedulingDate).format('MMMM[ ]DD[, ]YYYY')
+  const displayedTime = dayjs(schedulingDate).format('HH:mm[h]')
 
   // COMPONENT RENDER
   return (
@@ -51,11 +63,11 @@ export function ConfirmStep({
       <FormHeader>
         <Text>
           <CalendarBlank />
-          {describedDate}
+          {displayedDate}
         </Text>
         <Text>
           <Clock />
-          {describedTime}
+          {displayedTime}
         </Text>
       </FormHeader>
 
