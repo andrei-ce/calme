@@ -5,6 +5,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
+  // Validations ##########################################
   if (req.method !== 'GET') {
     return res.status(405).end()
   }
@@ -26,6 +27,7 @@ export default async function handler(
     return res.status(400).json({ message: 'User does not exist.' })
   }
 
+  // Availability ##########################################
   const availableWeekDays = await prisma.userTimeSlot.findMany({
     select: {
       week_day: true,
@@ -41,27 +43,27 @@ export default async function handler(
     )
   })
 
-  const blockedDatesRaw: Array<{ date: number }> = await prisma.$queryRaw`
+  const blockedDatesRaw: Array<{ day_of_the_month: number }> =
+    await prisma.$queryRaw`
     SELECT
-      EXTRACT(DAY FROM M.DATE) AS date,
-      COUNT(M.date) AS amount,
-      ((UTS.time_end_in_min - UTS.time_start_in_min) / 60) AS size
-
-    FROM meetings M
-
-    LEFT JOIN user_time_slots UTS
-      ON UTS.week_day = WEEKDAY(DATE_ADD(M.date, INTERVAL 1 DAY))
-
-    WHERE S.user_id = ${user.id}
+      EXTRACT(DAY FROM M.DATE) as day_of_the_month,
+      COUNT(M.date) meetings_count,
+      ((UTS.time_end_in_min - UTS.time_start_in_min) / 60) available_slots_count
+    FROM 
+      Meetings M
+      LEFT JOIN UserTimeSlots UTS ON UTS.week_day = WEEKDAY(DATE_ADD(M.date, INTERVAL 1 DAY))
+    WHERE M.user_id = ${user.id}
       AND DATE_FORMAT(M.date, "%Y-%m") = ${`${year}-${month}`}
-
-    GROUP BY EXTRACT(DAY FROM M.DATE),
-      ((UTS.time_end_in_min - UTS.time_start_in_min) / 60)
-
-    HAVING amount >= size
+    GROUP BY 1,3
+    HAVING meetings_count >= available_slots_count
   `
 
-  const blockedDates = blockedDatesRaw.map((item) => item.date)
+  const blockedDatesInMonth = blockedDatesRaw.map(
+    (item) => item.day_of_the_month,
+  )
 
-  return res.json({ blockedWeekDays, blockedDates })
+  return res.json({
+    blockedWeekDays,
+    blockedDatesInMonth,
+  })
 }

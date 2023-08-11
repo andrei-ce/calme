@@ -10,6 +10,9 @@ import {
 import { getWeekDays } from '@/utils/get-week-days'
 import dayjs from 'dayjs'
 import { useMemo, useState } from 'react'
+import { useRouter } from 'next/router'
+import { api } from '@/lib/axios'
+import { useQuery } from '@tanstack/react-query'
 
 type CalendarWeek = Array<{
   date: dayjs.Dayjs
@@ -17,6 +20,11 @@ type CalendarWeek = Array<{
 }>
 
 type CalendarWeeks = CalendarWeek[]
+
+interface BlockedDates {
+  blockedWeekDays: number[]
+  blockedDatesInMonth: number[]
+}
 
 interface CalendarProps {
   selectedDate?: Date | null
@@ -30,6 +38,9 @@ export function Calendar({ selectedDate, onDateSelected }: CalendarProps) {
   const currentMonth = currentDate.format('MMMM')
   const currentYear = currentDate.format('YYYY')
 
+  const router = useRouter()
+  const username = String(router.query.username)
+
   function handlePreviousMonth() {
     const previousMonthDate = currentDate.subtract(1, 'month')
     setCurrentDate(previousMonthDate)
@@ -39,8 +50,25 @@ export function Calendar({ selectedDate, onDateSelected }: CalendarProps) {
     setCurrentDate(nextMonthDate)
   }
 
+  const { data: blockedDates } = useQuery<BlockedDates>(
+    ['blocked-dates', currentDate.get('year'), currentDate.get('month')], // to cache per year per month
+    async () => {
+      const res = await api.get(`/users/${username}/blocked-dates`, {
+        params: {
+          year: currentDate.get('year'),
+          month: String(currentDate.get('month') + 1).padStart(2, '0'),
+        },
+      })
+      return res.data
+    },
+  )
+
   // To-do: extract this function into a custom hook that takes a date and returns an array of weeks including the prev and next month's "rest of the week"
   const calendarWeeks = useMemo(() => {
+    if (!blockedDates) {
+      return []
+    }
+
     // Current month logic ######################
     const daysInCurrentMonth = currentDate.daysInMonth()
     const daysInCurrentMonthArray = Array.from({
@@ -49,7 +77,10 @@ export function Calendar({ selectedDate, onDateSelected }: CalendarProps) {
       const date = currentDate.set('date', i + 1)
       return {
         date,
-        disabled: date.endOf('day').isBefore(new Date()),
+        disabled:
+          date.endOf('day').isBefore(new Date()) ||
+          blockedDates.blockedWeekDays.includes(date.get('day')) ||
+          blockedDates.blockedDatesInMonth.includes(date.get('date')),
       }
     })
 
@@ -93,7 +124,7 @@ export function Calendar({ selectedDate, onDateSelected }: CalendarProps) {
     }
 
     return calendarWeeks
-  }, [currentDate])
+  }, [currentDate, blockedDates])
 
   return (
     <CalendarContainer>
@@ -110,7 +141,6 @@ export function Calendar({ selectedDate, onDateSelected }: CalendarProps) {
           </button>
         </CalendarActions>
       </CalendarHeader>
-
       <CalendarBody>
         <thead>
           <tr>
