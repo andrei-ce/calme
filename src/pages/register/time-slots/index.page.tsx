@@ -109,11 +109,7 @@ export default function TimeSlotsPicker() {
     <Container>
       <Header>
         <Heading as="strong">Select your availability</Heading>
-        <Text>
-          Don&apos;t worry, we will only use this{' '}
-          <strong>when you decide to</strong> check for available slots and
-          schedule new events on your calendar.
-        </Text>
+        <Text>This is valid for all incoming weeks, including this one!</Text>
         <MultiStep size={4} currentStep={3} />
       </Header>
 
