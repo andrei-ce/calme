@@ -6,8 +6,10 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  //planetscale does not support foreign keys -- https://www.prisma.io/docs/guides/database/planetscale#:~:text=PlanetScale%20does%20not%20allow%20foreign,fields%20in%20your%20Prisma%20schema
+  relationMode = "prisma"
 }
 
 model User {
@@ -45,6 +47,7 @@ model Account {
   user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
   @@unique([provider, provider_account_id])
+  @@index([user_id])
   @@map("Accounts")
 }
 
@@ -55,6 +58,7 @@ model Session {
   expires       DateTime
   user          User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
+  @@index([user_id])
   @@map("Sessions")
 }
 
@@ -76,6 +80,7 @@ model UserTimeSlot {
 
   user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
+  @@index([user_id])
   @@map("UserTimeSlots")
 }
 
@@ -90,5 +95,6 @@ model Meeting {
   user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
   user_id String
 
+  @@index([user_id])
   @@map("Meetings")
 }
