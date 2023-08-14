@@ -1,11 +1,11 @@
 import { Adapter } from 'next-auth/adapters'
 import { prisma } from '../prisma'
-import { NextApiResponse, NextApiRequest } from 'next'
+import { NextApiResponse, NextApiRequest, NextPageContext } from 'next'
 import { destroyCookie, parseCookies } from 'nookies'
 
 export default function PrismaAdapter(
-  req: NextApiRequest,
-  res: NextApiResponse,
+  req: NextApiRequest | NextPageContext['req'],
+  res: NextApiResponse | NextPageContext['res'],
 ): Adapter {
   return {
     // this will not create a user, as it has been already created on /register

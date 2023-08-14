@@ -53,7 +53,8 @@ export default function UpdateProfile() {
         <Header>
           <Heading as="strong">Welcome to Cal.me</Heading>
           <Text>
-            We need some information to create your profile! Oh, you can edit this later too 😉 
+            We need some information to create your profile! Oh, you can edit
+            this later too 😉
           </Text>
 
           <MultiStep size={4} currentStep={4} />

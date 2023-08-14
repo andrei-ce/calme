@@ -3,16 +3,16 @@ import { NextApiRequest, NextApiResponse, NextPageContext } from 'next'
 import NextAuth, { NextAuthOptions } from 'next-auth'
 import GoogleProvider, { GoogleProfile } from 'next-auth/providers/google'
 
-// [...nextauth] is a route. For example, when accessing localhost/api/auth/param1/param2/etc, param1, param1 and etc will be passed as params to next-auth
+// [...nextauth] is a route. For example, when accessing localhost/api/auth/param1/param2/etc, param1, param2 and etc will be passed as params to next-auth
 export function buildNextAuthOptions(
   req: NextApiRequest | NextPageContext['req'],
   res: NextApiResponse | NextPageContext['res'],
 ): NextAuthOptions {
   return {
     adapter: PrismaAdapter(req, res),
-
     providers: [
       GoogleProvider({
+        // TO-DO: parse these variables to check they are not empty/undefined
         clientId: process.env.GOOGLE_OAUTH_CLIENT_ID ?? '',
         clientSecret: process.env.GOOGLE_OAUTH_CLIENT_SECRET ?? '',
         authorization: {
