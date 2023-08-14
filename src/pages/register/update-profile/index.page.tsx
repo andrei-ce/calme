@@ -19,7 +19,8 @@ import { useRouter } from 'next/router'
 import { ArrowRight } from 'phosphor-react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
-import { api } from '../../../lib/axios'
+import { api } from '@/lib/axios'
+import { NextSeo } from 'next-seo'
 
 const updateProfileSchema = z.object({
   bio: z.string(),
@@ -49,6 +50,8 @@ export default function UpdateProfile() {
 
   return (
     <>
+      <NextSeo title="Update your profile | Calme" noindex />
+
       <Container>
         <Header>
           <Heading as="strong">Welcome to Cal.me</Heading>

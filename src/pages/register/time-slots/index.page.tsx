@@ -23,6 +23,7 @@ import { getWeekDays } from '@/utils/get-week-days'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { convertTimeToMin } from '@/utils/convert-time'
 import { api } from '@/lib/axios'
+import { NextSeo } from 'next-seo'
 
 // FORM RELATED //
 const timeSlotsFormSchema = z.object({
@@ -106,64 +107,68 @@ export default function TimeSlotsPicker() {
 
   // COMPONENT RENDERED //
   return (
-    <Container>
-      <Header>
-        <Heading as="strong">Select your availability</Heading>
-        <Text>This is valid for all incoming weeks, including this one!</Text>
-        <MultiStep size={4} currentStep={3} />
-      </Header>
+    <>
+      <NextSeo title="Select your availability | Calme" noindex />
 
-      <TimeSlotBox as="form" onSubmit={handleSubmit(handleSetTimeSlots)}>
-        <TimeSlotsContainer>
-          {fields.map((field, idx) => {
-            return (
-              <SlotItem key={field.id}>
-                <DayItem>
-                  {/* register doesn't work on non native HTML inputs, therefore the Controller */}
-                  <Controller
-                    name={`intervals.${idx}.enabled`}
-                    control={control}
-                    render={({ field }) => {
-                      return (
-                        <Checkbox
-                          onCheckedChange={(checked) => {
-                            // onChange just passes the value to the formState
-                            field.onChange(checked)
-                          }}
-                          checked={field.value}
-                        />
-                      )
-                    }}
-                  />
-                  <Text>{weekDays[field.weekDay]}</Text>
-                </DayItem>
-                <TimeIntervalInputs>
-                  <TextInput
-                    size="sm"
-                    type="time"
-                    disabled={!intervals[idx].enabled}
-                    // step={30}
-                    {...register(`intervals.${idx}.startTime`)}
-                  />
-                  <TextInput
-                    size="sm"
-                    type="time"
-                    disabled={!intervals[idx].enabled}
-                    // step={30}
-                    {...register(`intervals.${idx}.endTime`)}
-                  />
-                </TimeIntervalInputs>
-              </SlotItem>
-            )
-          })}
-        </TimeSlotsContainer>
-        {errors.intervals ? (
-          <FormError size="md">{errors.intervals.message}</FormError>
-        ) : null}
-        <Button disabled={isSubmitting}>
-          Next Step <ArrowRight />
-        </Button>
-      </TimeSlotBox>
-    </Container>
+      <Container>
+        <Header>
+          <Heading as="strong">Select your availability</Heading>
+          <Text>This is valid for all incoming weeks, including this one!</Text>
+          <MultiStep size={4} currentStep={3} />
+        </Header>
+
+        <TimeSlotBox as="form" onSubmit={handleSubmit(handleSetTimeSlots)}>
+          <TimeSlotsContainer>
+            {fields.map((field, idx) => {
+              return (
+                <SlotItem key={field.id}>
+                  <DayItem>
+                    {/* register doesn't work on non native HTML inputs, therefore the Controller */}
+                    <Controller
+                      name={`intervals.${idx}.enabled`}
+                      control={control}
+                      render={({ field }) => {
+                        return (
+                          <Checkbox
+                            onCheckedChange={(checked) => {
+                              // onChange just passes the value to the formState
+                              field.onChange(checked)
+                            }}
+                            checked={field.value}
+                          />
+                        )
+                      }}
+                    />
+                    <Text>{weekDays[field.weekDay]}</Text>
+                  </DayItem>
+                  <TimeIntervalInputs>
+                    <TextInput
+                      size="sm"
+                      type="time"
+                      disabled={!intervals[idx].enabled}
+                      // step={30}
+                      {...register(`intervals.${idx}.startTime`)}
+                    />
+                    <TextInput
+                      size="sm"
+                      type="time"
+                      disabled={!intervals[idx].enabled}
+                      // step={30}
+                      {...register(`intervals.${idx}.endTime`)}
+                    />
+                  </TimeIntervalInputs>
+                </SlotItem>
+              )
+            })}
+          </TimeSlotsContainer>
+          {errors.intervals ? (
+            <FormError size="md">{errors.intervals.message}</FormError>
+          ) : null}
+          <Button disabled={isSubmitting}>
+            Next Step <ArrowRight />
+          </Button>
+        </TimeSlotBox>
+      </Container>
+    </>
   )
 }

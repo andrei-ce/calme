@@ -2,18 +2,18 @@ import { Heading, Text } from '@celoco-ui/react'
 import { Container, Hero, Preview } from './styles'
 import Image from 'next/image'
 
-import previewImg from '../../assets/calme_home.png'
+import previewImg from '../../assets/calme_home.jpg'
 import ClaimUsernameForm from './components/ClaimUsernameForm'
-// import { NextSeo } from 'next-seo'
+import { NextSeo } from 'next-seo'
 
 export default function Home() {
   return (
     <>
-      {/* <NextSeo
+      <NextSeo
         title="Untangle your calendar | Calme"
         description="Connect your calendar and let people book slots in your available
-        slots."
-      /> */}
+        time."
+      />
 
       <Container>
         <Hero>
