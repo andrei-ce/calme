@@ -1,6 +1,7 @@
 ## Intro
 
 This is a Next + Reactjs scheduling app, using a work-inprogress [design system](https://www.npmjs.com/package/@celoco-ui/react) created from scratch. It uses next api routes to deal with backend requests, and assumes a postgres database is available for connection.
+
 <br />
 <img src="https://i.ibb.co/fxH9PxZ/Screenshot-2023-09-05-at-10-47-58.jpg" alt="Landing page" width="350" height="200"/>
 <img src="https://i.ibb.co/CVJxhmD/Screenshot-2023-09-05-at-10-48-55.jpg" alt="Registration step 1" width="350" height="200"/>
