@@ -21,8 +21,8 @@ To run this project locally, you will need to do the following steps in the proj
 
 1. Run `npm install`
 2. Add environment variables as suggested in the `.env.example` file  
-2.1 Create a google app at [https://console.cloud.google.com/](https://console.cloud.google.com/)
-2.2 Generate a [NEXT_AUTH_SECRET](https://next-auth.js.org/configuration/options#nextauth_secret)
+2.1 Create a google app at [https://console.cloud.google.com/](https://console.cloud.google.com/)  
+2.2 Generate a [NEXT_AUTH_SECRET](https://next-auth.js.org/configuration/options#nextauth_secret)  
 2.3 Have a postgres database available. You can do this on any DB manager (e.g. DBeaver, PG Admin) or spin up a database through docker. If you choose docker, the base image `bitnami/postgresql:latest` is recommended
 3. Run `npx prisma migrate dev`  
 3.1 Check if the local db is correctly set up by running `npx prisma studio`, and seeing that tables are created (e.g. Users)
